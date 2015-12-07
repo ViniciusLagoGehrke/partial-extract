@@ -1,7 +1,7 @@
 {
   "name": "partial-extract",
   "description": "Extract partials from any text based file and write to distinct file.",
-  "version": "0.4.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/tilmanjusten/partial-extract",
   "author": {
     "name": "Tilman Justen",
@@ -23,21 +23,9 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.11.2"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.5"
-  },
-  "keywords": [
-    "gruntplugin"
-  ],
   "dependencies": {
-    "lodash": "^3.9.3"
+    "chalk": "^1.1.1",
+    "inventory-object": "git@github.com:tilmanjusten/inventory-object.git",
+    "lodash": "^3.10.1"
   }
 }

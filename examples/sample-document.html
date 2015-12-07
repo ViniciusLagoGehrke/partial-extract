@@ -1,0 +1,84 @@
+<!doctype html>
+<!--[if lt IE 9]>      <html class="no-js lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js lte-ie9 ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <title> - NGG-041 Rezeptseite Frontend-Prototype</title>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+
+<!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
+
+<link rel="stylesheet" href="css/main.css">
+
+<script src="js/polyfill.js"></script>
+
+</head>
+<body class="page--frontpage">
+<!--[if lte IE 9]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+
+<h1>Partial extract</h1>
+
+<!-- extract:test-component-1.html -->
+<div class="test-component">
+    <h2 class="test-component__title">Simple component without options</h2>
+</div>
+<!-- endextract -->
+
+
+<!-- extract:test-component-2.html wrap:<div class="component-wrap">:</div> -->
+<div class="test-component">
+    <h2 class="test-component__title">Wrapped component</h2>
+    <div class="test-component__main">
+        <p>
+            This component is wrapped in a <code>&lt;div&gt;</code> element.
+        </p>
+    </div>
+</div>
+<!-- endextract -->
+
+
+<!-- extract:test-component-3.html wrap:<div class="component-wrap">:</div> category:test name:Named component -->
+<div class="test-component">
+    <h2 class="test-component__title">Named and categorized component</h2>
+    <div class="test-component__main">
+        <p>
+            This component is wrapped in a <code>&lt;div&gt;</code> element.
+            This component does have a category and a given name.
+        </p>
+    </div>
+</div>
+<!-- endextract -->
+
+
+<!--
+    extract:test-component-4.html
+    category:test
+    name:Multiline extraction options
+-->
+<div class="test-component">
+    <h2 class="test-component__title">Multiline extraction options</h2>
+    <div class="test-component__main">
+        <p>
+            This component does have a category and a given name.
+        </p>
+    </div>
+</div>
+<!-- endextract -->
+
+
+
+<script src="js/vendor.js"></script>
+
+<script src="js/main.js"></script>
+
+
+</body>
+</html>
