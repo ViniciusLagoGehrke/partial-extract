@@ -15,4 +15,3 @@ var pe = new PE(files, {
     storePartials: false,
     partials: 'partials/'
 });
-
