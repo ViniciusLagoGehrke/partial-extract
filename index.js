@@ -11,7 +11,7 @@
 var _ = require('lodash');
 var path = require('path');
 var fs = require('fs');
-var chalk = require('chalk');
+//var chalk = require('chalk');
 var options = {};
 var InventoryObject = require('inventory-object');
 
@@ -56,9 +56,9 @@ var PartialExtract = function (files, _options) {
         indent: '    '
     }, _options);
 
-    console.log(chalk.white('Destination: ' + options.base));
-    console.log(chalk.white('Files: ' + files.length));
-    console.log('');
+    //console.log(chalk.white('Destination: ' + options.base));
+    //console.log(chalk.white('Files: ' + files.length));
+    //console.log('');
 
     // Create destination dir
     var baseAbsPath = path.resolve(options.base);
@@ -66,7 +66,7 @@ var PartialExtract = function (files, _options) {
     try {
         fs.accessSync(baseAbsPath, fs.R_OK);
     } catch (err) {
-        console.log(chalk.green('Create base directory: %s'), options.base);
+        //console.log(chalk.green('Create base directory: %s'), options.base);
         fs.mkdirSync(baseAbsPath);
     }
 
@@ -82,8 +82,8 @@ var PartialExtract = function (files, _options) {
         var content = fs.readFileSync(file, 'utf8');
 
         if (!options.patternExtract.test(content)) {
-            console.log(chalk.red('No partials in file ' + file));
-            console.log('');
+            //console.log(chalk.red('No partials in file ' + file));
+            //console.log('');
 
             return;
         }
@@ -94,7 +94,7 @@ var PartialExtract = function (files, _options) {
         // put resources to the options
         options.resources = options.resources ? _.assign({}, resources, options.resources) : resources;
 
-        console.log(chalk.green('Found ' + blocks.length + ' partials in file ' + file));
+        //console.log(chalk.green('Found ' + blocks.length + ' partials in file ' + file));
 
         // Write blocks to separate files
         blocks.map(function (block) {
@@ -121,7 +121,7 @@ var PartialExtract = function (files, _options) {
             }
         });
 
-        console.log('');
+        //console.log('');
     });
 
     processedBlocks.lengthUnique = uniqueBlocks.length;
@@ -129,9 +129,9 @@ var PartialExtract = function (files, _options) {
 
     fs.writeFileSync(options.storage, JSON.stringify(processedBlocks, null, '\t'), 'utf8');
 
-    console.log('');
+    //console.log('');
 
-    console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
+    //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
 };
 
 /**
