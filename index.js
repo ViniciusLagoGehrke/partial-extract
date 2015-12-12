@@ -48,7 +48,7 @@ var PartialExtract = function (files, _options) {
         base: './dist',
         // Partial directory where individual partial files will be stored (relative to base)
         partials: './partials',
-        // Store inventory data as JSON file
+        // Store inventory data as JSON file or `false` if not
         storage: './dist/partial-extract.json',
         // Enable storing partials as individual files
         storePartials: false,
@@ -121,11 +121,16 @@ var PartialExtract = function (files, _options) {
     processedBlocks.lengthUnique = uniqueBlocks.length;
     processedBlocks.lengthTotal = processedBlocks.items.length;
 
+    if (options.storage && typeof options.storage === 'string') {
+        fs.ensureDir(fs.dirname(options.storage));
     fs.writeJsonSync(options.storage, processedBlocks);
+    }
 
     //console.log('');
 
     //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
+
+    return processedBlocks;
 };
 
 /**
