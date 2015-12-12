@@ -11,7 +11,6 @@
 var _ = require('lodash'),
     path = require('path'),
     fs = require('fs-extra'),
-    // chalk = require('chalk'),
     options = {},
     InventoryObject = require('inventory-object'),
     PartialExtract;
