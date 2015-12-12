@@ -83,7 +83,7 @@ PartialExtract = function (files, options) {
             return;
         }
 
-        blocks = getPartials(content);
+        blocks = content.match(options.patternExtract);
         resources = getResources(content);
 
         // Put resources to the options
@@ -130,16 +130,6 @@ PartialExtract = function (files, options) {
 
     return processedBlocks;
 };
-
-/**
- * Extract partials
- *
- * @param src
- * @returns {Array}
- */
-function getPartials(src) {
-    return src.match(options.patternExtract);
-}
 
 /**
  * Extract resource path of
