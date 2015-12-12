@@ -15,7 +15,7 @@ var fs = require('fs-extra');
 var options = {};
 var InventoryObject = require('inventory-object');
 
-var PartialExtract = function (files, _options) {
+var PartialExtract = function (files, options) {
     // Merge task-specific and/or target-specific options with these defaults.
     options = _.assign({
         // Find partials by pattern:
@@ -54,7 +54,7 @@ var PartialExtract = function (files, _options) {
         storePartials: false,
         // Set indent value of partial code
         indent: '    '
-    }, _options);
+    }, options);
 
     //console.log(chalk.white('Destination: ' + options.base));
     //console.log(chalk.white('Files: ' + files.length));
@@ -123,7 +123,7 @@ var PartialExtract = function (files, _options) {
 
     if (options.storage && typeof options.storage === 'string') {
         fs.ensureDir(fs.dirname(options.storage));
-    fs.writeJsonSync(options.storage, processedBlocks);
+        fs.writeJsonSync(options.storage, processedBlocks);
     }
 
     //console.log('');
