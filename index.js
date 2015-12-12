@@ -8,14 +8,18 @@
 
 'use strict';
 
-var _ = require('lodash');
-var path = require('path');
-var fs = require('fs-extra');
-//var chalk = require('chalk');
-var options = {};
-var InventoryObject = require('inventory-object');
+var _ = require('lodash'),
+    path = require('path'),
+    fs = require('fs-extra'),
+    // chalk = require('chalk'),
+    options = {},
+    InventoryObject = require('inventory-object'),
+    PartialExtract;
 
-var PartialExtract = function (files, options) {
+PartialExtract = function (files, options) {
+    var baseAbsPath, processedBlocks,
+        uniqueBlocks = [];
+
     // Merge task-specific and/or target-specific options with these defaults.
     options = _.assign({
         // Find partials by pattern:
@@ -53,51 +57,50 @@ var PartialExtract = function (files, options) {
         // Enable storing partials as individual files
         storePartials: false,
         // Set indent value of partial code
-        indent: '    '
+        indent: '  '
     }, options);
 
     //console.log(chalk.white('Destination: ' + options.base));
     //console.log(chalk.white('Files: ' + files.length));
-    //console.log('');
 
-    // Create destination dir if not exist
-    var baseAbsPath = path.resolve(options.base);
-    fs.ensureDir(baseAbsPath);
-
-    var processedBlocks = {
+    baseAbsPath = path.resolve(options.base);
+    processedBlocks = {
         options: options,
         length: 0,
         items: []
     };
-    var uniqueBlocks = [];
+
+    // Create destination dir if not exist
+    fs.ensureDir(baseAbsPath);
 
     // Iterate over all specified file groups.
     files.forEach(function (file) {
-        var content = fs.readFileSync(file, 'utf8');
+        var content = fs.readFileSync(file, 'utf8'),
+            blocks, resources;
 
         if (!options.patternExtract.test(content)) {
             //console.log(chalk.red('No partials in file ' + file));
-            //console.log('');
 
             return;
         }
 
-        var blocks = getPartials(content);
-        var resources = getResources(content);
+        blocks = getPartials(content);
+        resources = getResources(content);
 
-        // put resources to the options
+        // Put resources to the options
         options.resources = options.resources ? _.assign({}, resources, options.resources) : resources;
 
         //console.log(chalk.green('Found ' + blocks.length + ' partials in file ' + file));
 
         // Write blocks to separate files
         blocks.map(function (block) {
-            // init inventory object
-            var opts = _.assign({}, options);
-            var processed = new InventoryObject();
-            var isDuplicate = false;
+            // Init inventory object
+            var opts = _.assign({}, options),
+                processed = new InventoryObject(),
+                isDuplicate = false,
+                partialPath = path.resolve(options.base, options.partials, processed.id);
 
-            // process block
+            // Process block
             processed.parseData(block, opts);
             processed.setProperty('origin', file);
 
@@ -109,13 +112,11 @@ var PartialExtract = function (files, options) {
                 isDuplicate = true;
             }
 
-            // store partial if not already happen
+            // Store partial if not already happen
             if (options.storePartials && !isDuplicate) {
-                fs.writeFileSync(path.resolve(options.base, options.partials, processed.id), processed.template, 'utf8');
+                fs.writeFileSync(partialPath, processed.template, 'utf8');
             }
         });
-
-        //console.log('');
     });
 
     processedBlocks.lengthUnique = uniqueBlocks.length;
@@ -126,15 +127,13 @@ var PartialExtract = function (files, options) {
         fs.writeJsonSync(options.storage, processedBlocks);
     }
 
-    //console.log('');
-
     //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
 
     return processedBlocks;
 };
 
 /**
- * extract partials
+ * Extract partials
  *
  * @param src
  * @returns {Array}
@@ -144,7 +143,7 @@ function getPartials(src) {
 }
 
 /**
- * extract resource path of
+ * Extract resource path of
  * - javascript resources in <head> and <body>
  * - stylesheet resources in <head>
  * - <style> in <head>
@@ -155,13 +154,14 @@ function getPartials(src) {
  * @param src
  */
 function getResources(src) {
-    var head = src.match(/<head((.|\n)*)<\/head>/i)[1];
-    var body = src.match(/<body((.|\n)*)<\/body>/i)[1];
-    var rootClassnames = src.match(/<html.+class="([^"]*)">/i);
-    var bodyClassnames = src.match(/<body.+class="([^"]*)">/i);
+    var head = src.match(/<head((.|\n)*)<\/head>/i)[1],
+        body = src.match(/<body((.|\n)*)<\/body>/i)[1],
+        rootClassnames = src.match(/<html.+class="([^"]*)">/i),
+        bodyClassnames = src.match(/<body.+class="([^"]*)">/i),
+        data;
 
-    // defaults
-    var data = {
+    // Defaults
+    data = {
         classnames: {
             root: rootClassnames && rootClassnames.length ? rootClassnames[1] : '',
             body: bodyClassnames && bodyClassnames.length ? bodyClassnames[1] : ''
@@ -183,16 +183,16 @@ function getResources(src) {
 
     // <head> section
     if (head && head.length > 0) {
-        // stylesheet resources
+        // Stylesheet resources
         data.stylesHead.files = getStylesheetResources(head);
 
-        // inline styles
+        // Inline styles
         data.stylesHead.inline = getInlineStyles(head);
 
-        // script resources
+        // Script resources
         data.scriptsHead.files = getScriptResources(head);
 
-        // inline scripts, get script tags without src: <script> or <script type="xyz">, lazy mode
+        // Inline scripts, get script tags without src: <script> or <script type="xyz">, lazy mode
         data.scriptsHead.inline = getInlineScripts(head);
 
         // <meta>
@@ -209,7 +209,7 @@ function getResources(src) {
 }
 
 /**
- * get paths of stylesheet resources
+ * Get paths of stylesheet resources
  *
  * @param src
  * @returns {Array}
@@ -227,7 +227,7 @@ function getStylesheetResources(src) {
 }
 
 /**
- * get inline styles
+ * Get inline styles
  *
  * @param src
  * @returns {Array}
@@ -245,7 +245,7 @@ function getInlineStyles(src) {
 }
 
 /**
- * get paths of script resources
+ * Get paths of script resources
  *
  * @param src
  * @returns {Array}
@@ -263,7 +263,7 @@ function getScriptResources(src) {
 }
 
 /**
- * get inline scripts
+ * Get inline scripts
  *
  * @param src
  * @returns {Array}
