@@ -25,44 +25,7 @@ PartialExtract = function (files, options, callback) {
         uniqueBlocks = [];
 
     // Merge task-specific and/or target-specific options with these defaults.
-    options = _.assign({
-        // Find partials by pattern:
-        //
-        // <!-- extract:individual-file.html optional1:value optional2:value1:value2 -->
-        //   partial
-        // <!-- endextract -->
-        patternExtract: new RegExp(/<!--\s*extract:(.|\n)*?endextract\s?-->/g),
-        // Wrap partial in template element and add options as data attributes
-        templateWrap: {
-            before: '<template id="partial" {{wrapData}}>',
-            after: '</template>'
-        },
-        // Wrap component for viewing purposes: e.g. add production context
-        //
-        // <!-- extract:individual-file.html wrap:<div class="context">:</div> -->
-        //   partial
-        // <!-- endextract -->
-        //
-        // results in
-        //
-        // <div class="context">
-        //   partial
-        // </div>
-        viewWrap: {
-            before: '',
-            after: ''
-        },
-        // Base directory
-        base: './dist',
-        // Partial directory where individual partial files will be stored (relative to base)
-        partials: './partials',
-        // Store inventory data as JSON file or `false` if not
-        storage: './dist/partial-extract.json',
-        // Enable storing partials as individual files
-        storePartials: false,
-        // Set indent value of partial code
-        indent: '  '
-    }, options);
+    options = _.assign(this.defaultOptions, options);
 
     //console.log(chalk.white('Destination: ' + options.base));
     //console.log(chalk.white('Files: ' + files.length));
@@ -135,6 +98,45 @@ PartialExtract = function (files, options, callback) {
     //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
 
     callback(null, processedBlocks);
+};
+
+PartialExtract.prototype.defaultOptions = {
+    // Find partials by pattern:
+    //
+    // <!-- extract:individual-file.html optional1:value optional2:value1:value2 -->
+    //   partial
+    // <!-- endextract -->
+    patternExtract: new RegExp(/<!--\s*extract:(.|\n)*?endextract\s?-->/g),
+    // Wrap partial in template element and add options as data attributes
+    templateWrap: {
+        before: '<template id="partial" {{wrapData}}>',
+        after: '</template>'
+    },
+    // Wrap component for viewing purposes: e.g. add production context
+    //
+    // <!-- extract:individual-file.html wrap:<div class="context">:</div> -->
+    //   partial
+    // <!-- endextract -->
+    //
+    // results in
+    //
+    // <div class="context">
+    //   partial
+    // </div>
+    viewWrap: {
+        before: '',
+        after: ''
+    },
+    // Base directory
+    base: './dist',
+    // Partial directory where individual partial files will be stored (relative to base)
+    partials: './partials',
+    // Store inventory data as JSON file or `false` if not
+    storage: './dist/partial-extract.json',
+    // Enable storing partials as individual files
+    storePartials: false,
+    // Set indent value of partial code
+    indent: '  '
 };
 
 /**
