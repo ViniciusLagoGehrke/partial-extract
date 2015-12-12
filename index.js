@@ -1,11 +1,3 @@
-/*
- * partial-extract
- * https://github.com/tilmanjusten/partial-extract
- *
- * Copyright (c) 2015 Tilman Justen
- * Licensed under the MIT license.
- */
-
 'use strict';
 
 var _ = require('lodash'),
@@ -14,7 +6,21 @@ var _ = require('lodash'),
     InventoryObject = require('inventory-object'),
     PartialExtract;
 
-PartialExtract = function (files, options) {
+module.exports = pe;
+
+function pe(files, options, callback) {
+    files = typeof files === 'object' ? files : {};
+    options = typeof options === 'object' ? options : {};
+    callback = typeof callback === 'function' ? callback : noop;
+
+    return new PartialExtract(files, options, callback);
+}
+
+function noop() {
+
+}
+
+PartialExtract = function (files, options, callback) {
     var baseAbsPath, processedBlocks,
         uniqueBlocks = [];
 
@@ -128,7 +134,7 @@ PartialExtract = function (files, options) {
 
     //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
 
-    return processedBlocks;
+    callback(null, processedBlocks);
 };
 
 /**
@@ -268,6 +274,3 @@ function getInlineScripts(src) {
         return match.match(/<script[^>]*>((.|\n)*)<\/script>/i)[1];
     });
 }
-
-
-module.exports = PartialExtract;
