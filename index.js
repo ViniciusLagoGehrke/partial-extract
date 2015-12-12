@@ -10,7 +10,7 @@
 
 var _ = require('lodash');
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 //var chalk = require('chalk');
 var options = {};
 var InventoryObject = require('inventory-object');
@@ -60,15 +60,9 @@ var PartialExtract = function (files, _options) {
     //console.log(chalk.white('Files: ' + files.length));
     //console.log('');
 
-    // Create destination dir
+    // Create destination dir if not exist
     var baseAbsPath = path.resolve(options.base);
-
-    try {
-        fs.accessSync(baseAbsPath, fs.R_OK);
-    } catch (err) {
-        //console.log(chalk.green('Create base directory: %s'), options.base);
-        fs.mkdirSync(baseAbsPath);
-    }
+    fs.ensureDir(baseAbsPath);
 
     var processedBlocks = {
         options: options,
@@ -127,7 +121,7 @@ var PartialExtract = function (files, _options) {
     processedBlocks.lengthUnique = uniqueBlocks.length;
     processedBlocks.lengthTotal = processedBlocks.items.length;
 
-    fs.writeFileSync(options.storage, JSON.stringify(processedBlocks, null, '\t'), 'utf8');
+    fs.writeJsonSync(options.storage, processedBlocks);
 
     //console.log('');
 
