@@ -121,8 +121,9 @@ PartialExtract = function (files, options) {
     processedBlocks.lengthUnique = uniqueBlocks.length;
     processedBlocks.lengthTotal = processedBlocks.items.length;
 
+    // Assume string is file path, so store data as JSON file
     if (options.storage && typeof options.storage === 'string') {
-        fs.ensureDir(fs.dirname(options.storage));
+        fs.ensureDir(path.dirname(options.storage));
         fs.writeJsonSync(options.storage, processedBlocks);
     }
 
