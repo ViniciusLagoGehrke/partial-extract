@@ -5,7 +5,7 @@
 ## Getting Started
 
 ```shell
-npm install grunt-partial-extract --save-dev
+npm install partial-extract --save-dev
 ```
 
 ## Contributing
