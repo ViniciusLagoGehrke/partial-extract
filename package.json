@@ -1,7 +1,7 @@
 {
   "name": "partial-extract",
   "description": "Extract partials from any text based file and write to distinct file.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/tilmanjusten/partial-extract",
   "author": {
     "name": "Tilman Justen",
