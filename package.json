@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "fs-extra": "^0.26.2",
-    "inventory-object": "^1.0.1",
+    "inventory-object": "^1.0.3",
     "lodash": "^3.10.1"
   }
 }
