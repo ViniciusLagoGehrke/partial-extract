@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "fs-extra": "^0.26.2",
-    "inventory-object": "git@github.com:tilmanjusten/inventory-object.git",
+    "inventory-object": "^1.0.1",
     "lodash": "^3.10.1"
   }
 }
