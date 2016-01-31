@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "fs-extra": "^0.26.5",
-    "inventory-object": "^1.0.3"
+    "inventory-object": "^1.0.4"
   }
 }
