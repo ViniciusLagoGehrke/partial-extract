@@ -1,7 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
-    path = require('path'),
+var path = require('path'),
     fs = require('fs-extra'),
     InventoryObject = require('inventory-object'),
     PartialExtract;
@@ -11,61 +10,49 @@ module.exports = pe;
 function pe(files, options, callback) {
     files = typeof files === 'object' ? files : {};
     options = typeof options === 'object' ? options : {};
-    callback = typeof callback === 'function' ? callback : noop;
+    callback = typeof callback === 'function' ? callback : () => {};
 
     return new PartialExtract(files, options, callback);
 }
 
-function noop() {
-
-}
-
 PartialExtract = function (files, options, callback) {
-    var baseAbsPath, processedBlocks,
-        uniqueBlocks = [];
-
     // Merge task-specific and/or target-specific options with these defaults.
-    options = _.assign(this.defaultOptions, options);
+    options = Object.assign(this.defaultOptions, options);
 
-    //console.log(chalk.white('Destination: ' + options.base));
-    //console.log(chalk.white('Files: ' + files.length));
-
-    baseAbsPath = path.resolve(options.base);
-    processedBlocks = {
+    const baseAbsPath = path.resolve(options.base);
+    const processedBlocks = {
         options: options,
         length: 0,
+        lengthUnique: 0,
+        lengthTotal: 0,
         items: []
     };
+    const uniqueBlocks = [];
 
     // Create destination dir if not exist
     fs.ensureDir(baseAbsPath);
 
     // Iterate over all specified file groups.
     files.forEach(function (file) {
-        var content = fs.readFileSync(file, 'utf8'),
-            blocks, resources;
+        const content = fs.readFileSync(file, 'utf8');
 
         if (!options.patternExtract.test(content)) {
-            //console.log(chalk.red('No partials in file ' + file));
-
             return;
         }
 
-        blocks = content.match(options.patternExtract);
-        resources = getResources(content);
+        const blocks = content.match(options.patternExtract);
+        const resources = getResources(content);
 
         // Put resources to the options
-        options.resources = options.resources ? _.assign({}, resources, options.resources) : resources;
-
-        //console.log(chalk.green('Found ' + blocks.length + ' partials in file ' + file));
+        options.resources = options.resources ? Object.assign({}, resources, options.resources) : resources;
 
         // Write blocks to separate files
         blocks.map(function (block) {
             // Init inventory object
-            var opts = _.assign({}, options),
-                processed = new InventoryObject(),
-                isDuplicate = false,
-                partialPath = path.resolve(options.base, options.partials, processed.id);
+            const opts = Object.assign({}, options);
+            const processed = new InventoryObject();
+            let isDuplicate = false;
+            const partialPath = path.resolve(options.base, options.partials, processed.id);
 
             // Process block
             processed.parseData(block, opts);
@@ -95,8 +82,6 @@ PartialExtract = function (files, options, callback) {
         fs.writeJsonSync(options.storage, processedBlocks);
     }
 
-    //console.log(chalk.green('Extracted ' + processedBlocks.length + ' partials, ' + uniqueBlocks.length + ' unique.'));
-
     callback(null, processedBlocks);
 };
 
@@ -106,7 +91,7 @@ PartialExtract.prototype.defaultOptions = {
     // <!-- extract:individual-file.html optional1:value optional2:value1:value2 -->
     //   partial
     // <!-- endextract -->
-    patternExtract: new RegExp(/<!--\s*extract:(.|\n)*?endextract\s?-->/g),
+    patternExtract: new RegExp('/<!--\s*extract:(.|\n)*?endextract\s?-->/g'),
     // Wrap partial in template element and add options as data attributes
     templateWrap: {
         before: '<template id="partial" {{wrapData}}>',
@@ -151,14 +136,13 @@ PartialExtract.prototype.defaultOptions = {
  * @param src
  */
 function getResources(src) {
-    var head = src.match(/<head((.|\n)*)<\/head>/i)[1],
-        body = src.match(/<body((.|\n)*)<\/body>/i)[1],
-        rootClassnames = src.match(/<html.+class="([^"]*)">/i),
-        bodyClassnames = src.match(/<body.+class="([^"]*)">/i),
-        data;
+    const head = src.match(/<head((.|\n)*)<\/head>/i)[1];
+    const body = src.match(/<body((.|\n)*)<\/body>/i)[1];
+    const rootClassnames = src.match(/<html.+class="([^"]*)">/i);
+    const bodyClassnames = src.match(/<body.+class="([^"]*)">/i);
 
     // Defaults
-    data = {
+    let data = {
         classnames: {
             root: rootClassnames && rootClassnames.length ? rootClassnames[1] : '',
             body: bodyClassnames && bodyClassnames.length ? bodyClassnames[1] : ''
@@ -212,15 +196,13 @@ function getResources(src) {
  * @returns {Array}
  */
 function getStylesheetResources(src) {
-    var resources = src.match(/<link.+rel="stylesheet".*>/gi);
+    const resources = src.match(/<link.+rel="stylesheet".*>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map(function (match) {
-        return match.match(/href="([^"]+)"/i)[1];
-    });
+    return resources.map((match) => match.match(/href="([^"]+)"/i)[1]);
 }
 
 /**
@@ -230,15 +212,13 @@ function getStylesheetResources(src) {
  * @returns {Array}
  */
 function getInlineStyles(src) {
-    var resources = src.match(/<style[^>]*?>((.|\n)*?)<\/style>/gi);
+    const resources = src.match(/<style[^>]*?>((.|\n)*?)<\/style>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map(function (match) {
-        return match.match(/<style[^>]*>((.|\n)*)<\/style>/i)[1];
-    });
+    return resources.map((match) => match.match(/<style[^>]*>((.|\n)*)<\/style>/i)[1]);
 }
 
 /**
@@ -248,15 +228,13 @@ function getInlineStyles(src) {
  * @returns {Array}
  */
 function getScriptResources(src) {
-    var resources = src.match(/<script.+src=".*>/gi);
+    const resources = src.match(/<script.+src=".*>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map(function (match) {
-        return match.match(/src="([^"]+)"/i)[1];
-    });
+    return resources.map((match) => match.match(/src="([^"]+)"/i)[1]);
 }
 
 /**
@@ -266,13 +244,11 @@ function getScriptResources(src) {
  * @returns {Array}
  */
 function getInlineScripts(src) {
-    var resources = src.match(/<script(?:.+type="[^"]+")?>((.|\n)*?)<\/script>/gi);
+    const resources = src.match(/<script(?:.+type="[^"]+")?>((.|\n)*?)<\/script>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map(function (match) {
-        return match.match(/<script[^>]*>((.|\n)*)<\/script>/i)[1];
-    });
+    return resources.map((match) => match.match(/<script[^>]*>((.|\n)*)<\/script>/i)[1]);
 }
