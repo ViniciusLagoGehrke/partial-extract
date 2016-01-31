@@ -91,7 +91,7 @@ PartialExtract.prototype.defaultOptions = {
     // <!-- extract:individual-file.html optional1:value optional2:value1:value2 -->
     //   partial
     // <!-- endextract -->
-    patternExtract: new RegExp('/<!--\s*extract:(.|\n)*?endextract\s?-->/g'),
+    patternExtract: new RegExp(/<!--\s*extract:(.|\n)*?endextract\s?-->/g),
     // Wrap partial in template element and add options as data attributes
     templateWrap: {
         before: '<template id="partial" {{wrapData}}>',
