@@ -55,7 +55,7 @@ PartialExtract = function (files, options, callback) {
 
             // Process block
             processed.parseData(block, opts);
-            processed.setProperty('origin', file);
+            processed.setProperty('origin', path.basename(file));
 
             processedBlocks.items.push(processed);
 
