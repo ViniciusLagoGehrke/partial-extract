@@ -140,16 +140,20 @@ PartialExtract.prototype.defaultOptions = {
  * @param src
  */
 function getResources(src) {
-    const head = src.match(/<head((.|\n)*)<\/head>/i)[1];
-    const body = src.match(/<body((.|\n)*)<\/body>/i)[1];
-    const rootClassnames = src.match(/<html.+class="([^"]*)">/i);
-    const bodyClassnames = src.match(/<body.+class="([^"]*)">/i);
+    const headMatches = src.match(/<head((.|\r?\n)*)<\/head>/i);
+    const bodyMatches = src.match(/<body((.|\r?\n)*)<\/body>/i);
+    const rootClassnameMatches = src.match(/<html.+class="([^"]*)">/i);
+    const bodyClassnameMatches = src.match(/<body.+class="([^"]*)">/i);
+    const head = headMatches && headMatches.length ? headMatches[1] : [];
+    const body = bodyMatches && bodyMatches.length ? bodyMatches[1] : [];
+    const rootClassnames = rootClassnameMatches && rootClassnameMatches.length ? rootClassnameMatches[1] : '';
+    const bodyClassnames = bodyClassnameMatches && bodyClassnameMatches.length ? bodyClassnameMatches[1] : '';
 
     // Defaults
     let data = {
         classnames: {
-            root: rootClassnames && rootClassnames.length ? rootClassnames[1] : '',
-            body: bodyClassnames && bodyClassnames.length ? bodyClassnames[1] : ''
+            root: rootClassnames,
+            body: bodyClassnames
         },
         meta: [],
         scriptsFoot: {
