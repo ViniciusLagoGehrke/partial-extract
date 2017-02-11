@@ -23,7 +23,6 @@ PartialExtract = function (files, options, callback) {
     // Merge task-specific and/or target-specific options with these defaults.
     options = Object.assign(this.defaultOptions, options);
 
-    const baseAbsPath = path.resolve(options.base);
     const processedBlocks = {
         options: options,
         length: 0,
@@ -32,9 +31,6 @@ PartialExtract = function (files, options, callback) {
         items: []
     };
     const uniqueBlocks = [];
-
-    // Create destination dir if not exist
-    fs.ensureDir(baseAbsPath);
 
     // Iterate over all specified file groups.
     files.forEach(function (file) {
@@ -56,7 +52,6 @@ PartialExtract = function (files, options, callback) {
             const opts = Object.assign({}, options);
             const processed = new InventoryObject();
             let isDuplicate = false;
-            const partialPath = path.resolve(options.base, options.partials, processed.id);
 
             // Process block
             processed.parseData(block, opts);
@@ -73,6 +68,8 @@ PartialExtract = function (files, options, callback) {
             // Store partial if not already happen
             if (options.storePartials && !isDuplicate) {
                 fs.writeFileSync(partialPath, processed.template, 'utf8');
+                const partialPath = path.resolve(options.partials, processed.id + options.ext);
+
             }
         });
     });
@@ -116,8 +113,6 @@ PartialExtract.prototype.defaultOptions = {
         before: '',
         after: ''
     },
-    // Base directory
-    base: './dist',
     // Partial directory where individual partial files will be stored (relative to base)
     partials: './partials',
     // Store inventory data as JSON file or `false` if not
