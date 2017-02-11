@@ -67,9 +67,13 @@ PartialExtract = function (files, options, callback) {
 
             // Store partial if not already happen
             if (options.storePartials && !isDuplicate) {
-                fs.writeFileSync(partialPath, processed.template, 'utf8');
                 const partialPath = path.resolve(options.partials, processed.id + options.ext);
 
+                fs.ensureDir(path.dirname(partialPath), function (err) {
+                    if (err === null) {
+                        fs.writeFile(partialPath, processed.template, 'utf8');
+                    }
+                });
             }
         });
     });
@@ -79,8 +83,11 @@ PartialExtract = function (files, options, callback) {
 
     // Assume string is file path, so store data as JSON file
     if (options.storage && typeof options.storage === 'string') {
-        fs.ensureDir(path.dirname(options.storage));
-        fs.writeJsonSync(options.storage, processedBlocks);
+        fs.ensureDir(path.dirname(options.storage), function (err) {
+            if (err === null) {
+                fs.writeJson(options.storage, processedBlocks);
+            }
+        });
     }
 
     callback(null, processedBlocks);
@@ -113,8 +120,10 @@ PartialExtract.prototype.defaultOptions = {
         before: '',
         after: ''
     },
-    // Partial directory where individual partial files will be stored (relative to base)
-    partials: './partials',
+    // Partial directory where individual partial files will be stored
+    partials: './dist/partials/',
+    // Partial file extension
+    ext: '.html',
     // Store inventory data as JSON file or `false` if not
     storage: './dist/partial-extract.json',
     // Enable storing partials as individual files
