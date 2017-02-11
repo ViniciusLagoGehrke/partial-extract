@@ -36,11 +36,11 @@ PartialExtract = function (files, options, callback) {
     files.forEach(function (file) {
         const content = fs.readFileSync(file, 'utf8');
 
-        if (!options.patternExtract.test(content)) {
+        if (!/(?:<!--)?\s*extract\:/i.test(content)) {
             return;
         }
 
-        const blocks = content.match(options.patternExtract);
+        const blocks = parseBlocks(content);
         const resources = getResources(content);
 
         // Put resources to the options
@@ -94,12 +94,6 @@ PartialExtract = function (files, options, callback) {
 };
 
 PartialExtract.prototype.defaultOptions = {
-    // Find partials by pattern:
-    //
-    // <!-- extract:individual-file.html optional1:value optional2:value1:value2 -->
-    //   partial
-    // <!-- endextract -->
-    patternExtract: new RegExp(/<!--\s*extract:(.|\n)*?endextract\s?-->/g),
     // Wrap partial in template element and add options as data attributes
     templateWrap: {
         before: '<template id="partial" {{wrapData}}>',
@@ -263,4 +257,72 @@ function getInlineScripts(src) {
     }
 
     return resources.map((match) => match.match(/<script[^>]*>((.|\r?\n)*)<\/script>/i)[1]);
+}
+
+/**
+ * Parse partial
+ *
+ * @param src
+ * @returns {Array}
+ */
+function parseBlocks(src) {
+    const lines = src.split(/\r?\n/);
+    let skip = 0;
+    let matches = [];
+    let collect = false;
+    let itemIndex = 0;
+
+    if (lines.length < 1) {
+        return [];
+    }
+
+    lines.forEach(function (line) {
+        if (/(?:<!--)?\s*extract\:/i.test(line)) {
+            collect = true;
+
+            // add opening of the comment if not exist, e.g. when multiline comment
+            if (/<!--\s*extract\:/i.test(line) === false) {
+                line = '<!-- ' + line;
+            }
+
+            // skip inner partials
+            skip += 1;
+        } else if (/(?:<!--)?\s*endextract/i.test(line)) {
+            // stop skipping
+            skip -= 1;
+        }
+
+        if (collect) {
+            if (matches[itemIndex] === undefined) {
+                matches[itemIndex] = [];
+            }
+
+            matches[itemIndex].push(line);
+        }
+
+        if (skip === 0 && collect === true) {
+            collect = false;
+            itemIndex += 1;
+        }
+    });
+
+    matches =  matches.map(function (block) {
+        return block.join('\n');
+    });
+
+    // be recursive on a copy of the result
+    matches.map(function (block) {
+        // remove annotations
+        const blockLines = block.split(/\r?\n/);
+        blockLines.pop();
+        blockLines.shift();
+
+        const innerBlock = blockLines.join('\n');
+
+        if (/(?:<!--)?\s*extract\:/i.test(innerBlock)) {
+            matches = matches.concat(parseBlocks(innerBlock));
+        }
+    });
+
+    return matches;
 }
