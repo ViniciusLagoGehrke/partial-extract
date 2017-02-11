@@ -23,10 +23,9 @@ function callback (err, data) {
 
 partialExtract(files, {
     force: true,
-    base: './dist/',
     storage: './dist/interface-inventory.json',
     //partialWrap: false,
     //flatten: true,
-    storePartials: false,
-    partials: 'partials/'
+    storePartials: true,
+    partials: './dist/partials/'
 }, callback);
