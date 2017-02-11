@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <title>Extract Nestes Partials</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+
+<h1>Partial extract</h1>
+
+<!-- extract:Outer Partial -->
+<div class="test-component">
+    <h2 class="test-component__title">Simple component without options</h2>
+
+    <!-- extract:Nested Partial: First Child of #1 wrap:<div class="component-wrap">:</div> -->
+    <div class="test-component">
+        <h2 class="test-component__title">Wrapped component</h2>
+        <div class="test-component__main">
+            <p>
+                This component is wrapped in a <code>&lt;div&gt;</code> element.
+            </p>
+        </div>
+    </div>
+    <!-- endextract -->
+
+    <!-- extract:Nested Partial: Second Child of #1 wrap:<div class="component-wrap">:</div> category:test name:Named component -->
+    <div class="test-component">
+        <h2 class="test-component__title">Named and categorized component</h2>
+        <div class="test-component__main">
+            <p>
+                This component is wrapped in a <code>&lt;div&gt;</code> element.
+                This component does have a category and a given name.
+            </p>
+        </div>
+    </div>
+    <!-- endextract -->
+
+    <p>
+        The outer component has some more content below the nested partials.
+    </p>
+
+</div>
+<!-- endextract -->
+
+<!--
+    extract:Single Partial
+    category:test
+    name:Multiline extraction options
+-->
+<div class="test-component">
+    <h2 class="test-component__title">Multiline extraction options</h2>
+    <div class="test-component__main">
+        <p>
+            This component does have a category and a given name.
+        </p>
+    </div>
+</div>
+<!-- endextract -->
+
+</body>
+</html>

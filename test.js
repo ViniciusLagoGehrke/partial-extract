@@ -3,6 +3,9 @@
 var partialExtract = require('./index');
 
 var files = [
+    'examples/nested-partials-simple.html',
+    'examples/no-nested-partials.html',
+    'examples/nested-partials.html',
     'examples/sample-document.html'
 ];
 
