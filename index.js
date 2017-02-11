@@ -1,16 +1,20 @@
 'use strict';
 
-var path = require('path'),
-    fs = require('fs-extra'),
-    InventoryObject = require('inventory-object'),
-    PartialExtract;
+var path = require('path');
+var fs = require('fs-extra');
+var InventoryObject = require('inventory-object');
+var PartialExtract;
 
 module.exports = pe;
+
+function noop() {
+
+}
 
 function pe(files, options, callback) {
     files = typeof files === 'object' ? files : {};
     options = typeof options === 'object' ? options : {};
-    callback = typeof callback === 'function' ? callback : () => {};
+    callback = typeof callback === 'function' ? callback : noop;
 
     return new PartialExtract(files, options, callback);
 }
