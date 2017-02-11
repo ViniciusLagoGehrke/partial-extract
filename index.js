@@ -215,13 +215,13 @@ function getStylesheetResources(src) {
  * @returns {Array}
  */
 function getInlineStyles(src) {
-    const resources = src.match(/<style[^>]*?>((.|\n)*?)<\/style>/gi);
+    const resources = src.match(/<style[^>]*?>((.|\r?\n)*?)<\/style>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map((match) => match.match(/<style[^>]*>((.|\n)*)<\/style>/i)[1]);
+    return resources.map((match) => match.match(/<style[^>]*>((.|\r?\n)*)<\/style>/i)[1]);
 }
 
 /**
@@ -247,11 +247,11 @@ function getScriptResources(src) {
  * @returns {Array}
  */
 function getInlineScripts(src) {
-    const resources = src.match(/<script(?:.+type="[^"]+")?>((.|\n)*?)<\/script>/gi);
+    const resources = src.match(/<script(?:.+type="[^"]+")?>((.|\r?\n)*?)<\/script>/gi);
 
     if (!resources || (resources && resources.length < 1)) {
         return [];
     }
 
-    return resources.map((match) => match.match(/<script[^>]*>((.|\n)*)<\/script>/i)[1]);
+    return resources.map((match) => match.match(/<script[^>]*>((.|\r?\n)*)<\/script>/i)[1]);
 }
