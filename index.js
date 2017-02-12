@@ -94,11 +94,6 @@ PartialExtract = function (files, options, callback) {
 };
 
 PartialExtract.prototype.defaultOptions = {
-    // Wrap partial in template element and add options as data attributes
-    templateWrap: {
-        before: '<template id="partial" {{wrapData}}>',
-        after: '</template>'
-    },
     // Wrap component for viewing purposes: e.g. add production context
     //
     // <!-- extract:individual-file.html wrap:<div class="context">:</div> -->
@@ -110,7 +105,7 @@ PartialExtract.prototype.defaultOptions = {
     // <div class="context">
     //   partial
     // </div>
-    viewWrap: {
+    wrap: {
         before: '',
         after: ''
     },
